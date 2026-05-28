@@ -340,7 +340,7 @@ export function EditorShell({ projectId }: EditorShellProps) {
       const toPaths = new Map(toVersion.files.map((f) => [f.path, f.content]));
 
       // Added or modified
-      for (const [path, newContent] of toPaths) {
+      for (const [path, newContent] of Array.from(toPaths)) {
         const oldContent = fromPaths.get(path);
         if (oldContent === undefined) {
           changes.push({ path, type: "added", oldContent: null, newContent });
@@ -350,7 +350,7 @@ export function EditorShell({ projectId }: EditorShellProps) {
       }
 
       // Removed
-      for (const [path, oldContent] of fromPaths) {
+      for (const [path, oldContent] of Array.from(fromPaths)) {
         if (!toPaths.has(path)) {
           changes.push({ path, type: "removed", oldContent, newContent: null });
         }

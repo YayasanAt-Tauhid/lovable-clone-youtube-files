@@ -352,7 +352,7 @@ export function VersionTimeline({
           if (!open) setRestoreConfirmVersion(null);
         }}
       >
-        <DialogContent showCloseButton={false}>
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>Restore version {restoreConfirmVersion}?</DialogTitle>
             <DialogDescription>

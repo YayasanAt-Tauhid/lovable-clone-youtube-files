@@ -76,7 +76,7 @@ export function ModelSelector({
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium">{m.name}</span>
                       {m.supportsVision && (
-                        <Eye className="h-3 w-3 text-muted-foreground" title="Supports vision" />
+                        <Eye className="h-3 w-3 text-muted-foreground" aria-label="Supports vision" />
                       )}
                       {m.tier === "fast" && (
                         <span className="text-[9px] font-medium text-emerald-500 border border-emerald-500/30 rounded px-1">
