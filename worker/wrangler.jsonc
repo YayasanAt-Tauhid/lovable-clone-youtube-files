@@ -1,0 +1,26 @@
+{
+  "name": "lovable-clone-worker",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-01-01",
+  "compatibility_flags": ["nodejs_compat"],
+
+  "kv_namespaces": [
+    {
+      "binding": "METADATA",
+      "id": "your-kv-namespace-id",
+      "preview_id": "your-preview-kv-namespace-id"
+    }
+  ],
+
+  "r2_buckets": [
+    {
+      "binding": "FILES",
+      "bucket_name": "lovable-clone-files",
+      "preview_bucket_name": "lovable-clone-files-preview"
+    }
+  ],
+
+  "vars": {
+    "FRONTEND_URL": "http://localhost:3000"
+  }
+}
