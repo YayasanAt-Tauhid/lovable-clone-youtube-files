@@ -281,10 +281,8 @@ date-fns for date formatting, recharts for charts, etc.).
 REMINDER
 ═══════════════════════════════════════
 
-Your response MUST follow this exact order:
-1. Start with 1-2 sentences explaining what you are doing (REQUIRED, before any <file> tag).
-2. Then output all code using <file> tags.
-NEVER start your response directly with a <file> tag. Always write the explanation first.`;
+Your response MUST include <file> tags with complete code. A brief explanation is fine,
+but the code in <file> tags is REQUIRED. Never respond with only text — always include code.`;
 
 /**
  * Formats existing project files into the context section of the system prompt.

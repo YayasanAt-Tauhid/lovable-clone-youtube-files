@@ -228,13 +228,10 @@ export function EditorShell({ projectId }: EditorShellProps) {
             }
           }
 
-          const cleanContent = accumulated
-            .replace(/<file\s+path="[^"]+">[\s\S]*?<\/file>/g, "")
-            .trim();
           const assistantMessage: ChatMessage = {
             id: assistantId,
             role: "assistant",
-            content: cleanContent,
+            content: accumulated,
             timestamp: new Date().toISOString(),
             model: selectedModel,
             versionNumber: finalData.versionNumber,
