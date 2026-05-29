@@ -195,8 +195,9 @@ export function mergeFiles(
  * @returns The explanation text with <file> blocks removed and trimmed
  */
 export function extractExplanation(response: string): string {
+  const cleanRegex = /<file\s+path="([^"]+)">\n?([\s\S]*?)\n?<\/file>/g;
   return response
-    .replace(FILE_TAG_REGEX, "")
+    .replace(cleanRegex, "")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
 }

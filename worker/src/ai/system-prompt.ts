@@ -341,7 +341,7 @@ const MAX_MESSAGE_PAIRS = 10;
  * Full AI responses can be very long (includes code blocks), so we
  * truncate them to save context window space.
  */
-const MAX_SUMMARY_LENGTH = 500;
+const MAX_SUMMARY_LENGTH = 3000;
 
 /**
  * Prepares chat history for inclusion in the AI prompt.
