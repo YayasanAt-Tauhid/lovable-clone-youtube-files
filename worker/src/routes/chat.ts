@@ -357,6 +357,7 @@ chatRouter.post("/:id/chat", async (c) => {
           changedFiles,
           assistantMessageId: assistantMsgId,
           userMessageId: userMsgId,
+          explanation: explanation || "",
         });
       } catch (err) {
         await writeSSE({ type: "error", error: String(err) });

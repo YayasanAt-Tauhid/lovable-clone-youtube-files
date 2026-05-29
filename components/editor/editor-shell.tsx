@@ -172,6 +172,7 @@ export function EditorShell({ projectId }: EditorShellProps) {
         let finalData: {
           versionNumber?: number;
           changedFiles?: string[];
+          explanation?: string;
         } | null = null;
         let sseError: string | null = null;
 
@@ -231,7 +232,7 @@ export function EditorShell({ projectId }: EditorShellProps) {
           const assistantMessage: ChatMessage = {
             id: assistantId,
             role: "assistant",
-            content: accumulated,
+            content: finalData.explanation || accumulated.split(/<file\s+path="/)[0].trim(),
             timestamp: new Date().toISOString(),
             model: selectedModel,
             versionNumber: finalData.versionNumber,
