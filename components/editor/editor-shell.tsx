@@ -496,7 +496,11 @@ export function EditorShell({ projectId }: EditorShellProps) {
               onClose={() => setDiffOpen(false)}
             />
           ) : (
-            <PreviewPanel files={files} isGenerating={isGenerating} />
+            <PreviewPanel
+              files={files}
+              version={project?.currentVersion}
+              isGenerating={isGenerating}
+            />
           )}
         </div>
 

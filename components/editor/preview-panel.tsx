@@ -2,9 +2,8 @@
 
 import dynamic from "next/dynamic";
 import type { ProjectFile } from "@/types/project";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { RefreshCw, ExternalLink, Monitor, Smartphone, Eye } from "lucide-react";
+import { RefreshCw, Monitor, Smartphone, Eye } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -28,16 +27,20 @@ const SandpackPreviewDynamic = dynamic(
 
 interface PreviewPanelProps {
   files: ProjectFile[];
+  version?: number;
   isGenerating?: boolean;
 }
 
-export function PreviewPanel({ files, isGenerating }: PreviewPanelProps) {
+export function PreviewPanel({ files, version, isGenerating }: PreviewPanelProps) {
   const [isMobile, setIsMobile] = useState(false);
-  const [refreshKey, setRefreshKey] = useState(0);
+  const [manualRefresh, setManualRefresh] = useState(0);
 
   function handleRefresh() {
-    setRefreshKey((k) => k + 1);
+    setManualRefresh((k) => k + 1);
   }
+
+  // Re-mount Sandpack when version changes (new generation) or user manually refreshes
+  const sandpackKey = `v${version ?? 0}-r${manualRefresh}-${isMobile ? "m" : "d"}`;
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -125,7 +128,7 @@ export function PreviewPanel({ files, isGenerating }: PreviewPanelProps) {
             )}
           >
             <SandpackPreviewDynamic
-              key={refreshKey}
+              key={sandpackKey}
               files={files}
               isMobile={isMobile}
             />
