@@ -193,7 +193,9 @@ export function EditorShell({ projectId }: EditorShellProps) {
 
               if (data.type === "token") {
                 accumulated += data.content;
-                setStreamingContent(accumulated);
+                // Only show text before the first <file tag — never show code in chat
+                const visibleText = accumulated.split(/<file\s+path="/)[0].trim();
+                setStreamingContent(visibleText);
               } else if (data.type === "done") {
                 finalData = data;
               } else if (data.type === "error") {
