@@ -33,6 +33,8 @@ export interface Env {
   GOOGLE_AI_API_KEY: string;
   OPENAI_API_KEY: string;
   DEEPSEEK_API_KEY: string;
+  OPENROUTER_API_KEY: string;
+  XAI_API_KEY: string;
   /** Svix signing secret for verifying Clerk billing webhooks */
   CLERK_WEBHOOK_SECRET: string;
   /** Frontend URL for CORS — defaults to localhost:3000 in dev */

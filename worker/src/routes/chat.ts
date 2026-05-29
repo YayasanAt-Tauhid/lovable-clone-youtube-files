@@ -58,6 +58,14 @@ const MODEL_CREDIT_COSTS: Record<string, number> = {
   "gemini-2-pro": 2,
   "deepseek-v3": 1,
   "deepseek-r1": 1,
+  // OpenRouter models (prefixed with "or/")
+  "or/meta-llama/llama-4-maverick": 1,
+  "or/mistralai/devstral-small": 1,
+  "or/qwen/qwen3-235b-a22b": 2,
+  "or/google/gemini-2.5-pro-preview-06-05": 2,
+  // xAI Grok models
+  "grok-3": 2,
+  "grok-3-mini": 1,
 };
 
 const VALID_MODELS = new Set(Object.keys(MODEL_CREDIT_COSTS));
@@ -71,6 +79,16 @@ const VALID_MODELS = new Set(Object.keys(MODEL_CREDIT_COSTS));
  * @returns AI SDK model object ready for use with streamText
  */
 function getModel(modelId: string, env: Env) {
+  // OpenRouter models — detected by "or/" prefix
+  if (modelId.startsWith("or/")) {
+    const orModelId = modelId.slice(3); // strip "or/" prefix
+    const openrouter = createOpenAI({
+      baseURL: "https://openrouter.ai/api/v1",
+      apiKey: env.OPENROUTER_API_KEY,
+    });
+    return openrouter(orModelId);
+  }
+
   const anthropic = createAnthropic({ apiKey: env.ANTHROPIC_API_KEY });
   const openai = createOpenAI({ apiKey: env.OPENAI_API_KEY });
   const google = createGoogleGenerativeAI({ apiKey: env.GOOGLE_AI_API_KEY });
@@ -93,6 +111,14 @@ function getModel(modelId: string, env: Env) {
       return deepseek("deepseek-chat");
     case "deepseek-r1":
       return deepseek("deepseek-reasoner");
+    case "grok-3": {
+      const xai = createOpenAI({ baseURL: "https://api.x.ai/v1", apiKey: env.XAI_API_KEY });
+      return xai("grok-3");
+    }
+    case "grok-3-mini": {
+      const xai = createOpenAI({ baseURL: "https://api.x.ai/v1", apiKey: env.XAI_API_KEY });
+      return xai("grok-3-mini");
+    }
     default:
       return openai("gpt-4o-mini");
   }

@@ -26,7 +26,7 @@
 export interface ModelInfo {
   id: string;
   name: string;
-  provider: "anthropic" | "openai" | "google" | "deepseek";
+  provider: "anthropic" | "openai" | "google" | "deepseek" | "openrouter" | "xai";
   tier: "fast" | "premium";
   speed: "very-fast" | "fast" | "medium";
   quality: "good" | "high";
@@ -138,6 +138,76 @@ export const MODELS: ModelInfo[] = [
     description: "Reasoning model. Excellent for complex logic and debugging.",
     supportsVision: false,
   },
+
+  // --- OpenRouter ---
+  {
+    id: "or/meta-llama/llama-4-maverick",
+    name: "Llama 4 Maverick",
+    provider: "openrouter",
+    tier: "fast",
+    speed: "fast",
+    quality: "high",
+    creditCost: 1,
+    description: "Meta's latest flagship. Strong coding and reasoning.",
+    supportsVision: true,
+  },
+  {
+    id: "or/mistralai/devstral-small",
+    name: "Devstral Small",
+    provider: "openrouter",
+    tier: "fast",
+    speed: "very-fast",
+    quality: "good",
+    creditCost: 1,
+    description: "Code-specialized by Mistral. Fast and efficient.",
+    supportsVision: false,
+  },
+  {
+    id: "or/qwen/qwen3-235b-a22b",
+    name: "Qwen3 235B",
+    provider: "openrouter",
+    tier: "premium",
+    speed: "medium",
+    quality: "high",
+    creditCost: 2,
+    description: "Alibaba's most powerful model. Excellent reasoning.",
+    supportsVision: false,
+  },
+  {
+    id: "or/google/gemini-2.5-pro-preview-06-05",
+    name: "Gemini 2.5 Pro",
+    provider: "openrouter",
+    tier: "premium",
+    speed: "medium",
+    quality: "high",
+    creditCost: 2,
+    description: "Latest Gemini with 1M context. Best for large projects.",
+    supportsVision: true,
+  },
+
+  // --- xAI ---
+  {
+    id: "grok-3",
+    name: "Grok 3",
+    provider: "xai",
+    tier: "premium",
+    speed: "medium",
+    quality: "high",
+    creditCost: 2,
+    description: "xAI flagship. Excellent for coding and analysis.",
+    supportsVision: true,
+  },
+  {
+    id: "grok-3-mini",
+    name: "Grok 3 Mini",
+    provider: "xai",
+    tier: "fast",
+    speed: "fast",
+    quality: "good",
+    creditCost: 1,
+    description: "Fast and affordable Grok model.",
+    supportsVision: false,
+  },
 ];
 
 /**
@@ -153,14 +223,16 @@ export const PROVIDER_LABELS: Record<string, string> = {
   openai: "OpenAI",
   google: "Google",
   deepseek: "DeepSeek",
+  openrouter: "OpenRouter",
+  xai: "xAI (Grok)",
 };
 
 /**
  * Provider ordering for the model selector dropdown.
  */
 export const PROVIDER_ORDER: Array<
-  "anthropic" | "openai" | "google" | "deepseek"
-> = ["anthropic", "openai", "google", "deepseek"];
+  "anthropic" | "openai" | "google" | "deepseek" | "openrouter" | "xai"
+> = ["anthropic", "openai", "google", "deepseek", "openrouter", "xai"];
 
 /**
  * Returns the speed label for a given speed value.
