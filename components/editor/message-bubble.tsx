@@ -62,10 +62,12 @@ export function MessageBubble({
     const content = isStreaming ? streamingContent : message.content;
     const showProgress = isStreaming || (message.changedFiles && message.changedFiles.length > 0);
 
-    // Extract explanation: text before/after file blocks
-    const explanationText = content
-      .replace(/<file\s+path="[^"]+">[\s\S]*?<\/file>/g, "")
-      .trim();
+    // Extract explanation:
+    // - While streaming: only show text BEFORE the first <file tag (file content not complete yet)
+    // - When done: strip all complete <file>...</file> blocks
+    const explanationText = isStreaming
+      ? content.split(/<file\s+path="/)[0].trim()
+      : content.replace(/<file\s+path="[^"]+">[\s\S]*?<\/file>/g, "").trim();
 
     return (
       <div className="flex gap-2.5 mb-4">
