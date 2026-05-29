@@ -1,28 +1,20 @@
 name = "lovable-clone"
+main = ".open-next/worker.js"
 compatibility_date = "2025-01-01"
-compatibility_flags = ["nodejs_compat"]
-pages_build_output_dir = ".open-next/assets"
+compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 
-# ──────────────────────────────────────────────
-# Environment variables (public — NEXT_PUBLIC_*)
-# Set secret vars (CLERK_SECRET_KEY, etc.) in the
-# Cloudflare Pages dashboard → Settings → Variables
-# ──────────────────────────────────────────────
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+
+[[services]]
+binding = "WORKER_SELF_REFERENCE"
+service = "lovable-clone"
+
 [vars]
 NEXT_PUBLIC_CLERK_SIGN_IN_URL = "/sign-in"
 NEXT_PUBLIC_CLERK_SIGN_UP_URL = "/sign-up"
 NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL = "/dashboard"
 NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL = "/dashboard"
-
-# ──────────────────────────────────────────────
-# Preview environment (wrangler pages dev)
-# ──────────────────────────────────────────────
-[env.preview.vars]
-NEXT_PUBLIC_WORKER_URL = "http://localhost:8787"
-
-# ──────────────────────────────────────────────
-# Production environment
-# Override NEXT_PUBLIC_WORKER_URL after you deploy the worker
-# ──────────────────────────────────────────────
-[env.production.vars]
-NEXT_PUBLIC_WORKER_URL = "https://lovable-clone-worker.YOURNAME.workers.dev"
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY = "pk_test_Y29tcG9zZWQtZm9hbC04My5jbGVyay5hY2NvdW50cy5kZXYk"
+NEXT_PUBLIC_WORKER_URL = "https://lovable-clone-worker.yayasan-attauhid-1.workers.dev"
