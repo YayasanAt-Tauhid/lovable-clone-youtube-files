@@ -91,18 +91,16 @@ export function EditorShell({ projectId }: EditorShellProps) {
         setMessages(chatData.messages);
       }
 
-      // Load current version files
-      if (projectData.currentVersion >= 0) {
-        const versionData = await apiClient.getVersion(
-          token,
-          projectId,
-          projectData.currentVersion
-        );
-        setFiles(versionData.files);
-        if (versionData.files.length > 0) {
+      // Load current version files (version 0 may not exist for brand new projects)
+      if (projectData.currentVersion > 0) {
+        const versionData = await apiClient
+          .getVersion(token, projectId, projectData.currentVersion)
+          .catch(() => null);
+        if (versionData?.files?.length) {
+          setFiles(versionData.files);
           const preferred = ["src/App.tsx", "src/app.tsx", "src/index.tsx"];
           const found = preferred.find((p) =>
-            versionData.files.some((f) => f.path === p)
+            versionData.files.some((f: { path: string }) => f.path === p)
           );
           setActiveFile(found || versionData.files[0].path);
         }
@@ -173,10 +171,9 @@ export function EditorShell({ projectId }: EditorShellProps) {
         let accumulated = "";
         let finalData: {
           versionNumber?: number;
-          files?: ProjectFile[];
           changedFiles?: string[];
-          model?: string;
         } | null = null;
+        let sseError: string | null = null;
 
         while (true) {
           const { done, value } = await reader.read();
@@ -199,24 +196,35 @@ export function EditorShell({ projectId }: EditorShellProps) {
               } else if (data.type === "done") {
                 finalData = data;
               } else if (data.type === "error") {
-                throw new Error(data.message || "Generation failed");
+                // Capture error OUTSIDE inner try-catch so it propagates
+                sseError = data.error || data.message || "Generation failed";
               }
-            } catch (parseErr) {
-              // Skip malformed lines
+            } catch {
+              // Skip malformed JSON lines
             }
           }
+
+          if (sseError) break;
         }
+
+        if (sseError) throw new Error(sseError);
 
         // Finalize
         if (finalData) {
-          if (finalData.files && finalData.files.length > 0) {
-            setFiles(finalData.files);
-            const preferred = ["src/App.tsx", "src/app.tsx"];
-            const foundFile = preferred.find((p) =>
-              finalData!.files!.some((f) => f.path === p)
-            );
-            if (foundFile && finalData.changedFiles?.includes(foundFile)) {
-              setActiveFile(foundFile);
+          // Fetch the newly generated files from the worker
+          if (finalData.versionNumber !== undefined) {
+            const versionData = await apiClient
+              .getVersion(token, projectId, finalData.versionNumber)
+              .catch(() => null);
+            if (versionData?.files) {
+              setFiles(versionData.files);
+              const preferred = ["src/App.tsx", "src/app.tsx", "src/index.tsx"];
+              const found = preferred.find((p) =>
+                versionData.files.some((f: { path: string }) => f.path === p)
+              );
+              if (found && finalData.changedFiles?.includes(found)) {
+                setActiveFile(found);
+              }
             }
           }
 
@@ -225,7 +233,7 @@ export function EditorShell({ projectId }: EditorShellProps) {
             role: "assistant",
             content: accumulated,
             timestamp: new Date().toISOString(),
-            model: finalData.model || selectedModel,
+            model: selectedModel,
             versionNumber: finalData.versionNumber,
             changedFiles: finalData.changedFiles,
           };
@@ -240,26 +248,26 @@ export function EditorShell({ projectId }: EditorShellProps) {
             );
           }
 
-          // Refresh versions
-          const newVersions = await apiClient
-            .getVersions(token, projectId)
-            .catch(() => versions);
+          // Refresh versions and credits
+          const [newVersions, newCredits] = await Promise.all([
+            apiClient.getVersions(token, projectId).catch(() => versions),
+            apiClient.getCredits(token).catch(() => credits),
+          ]);
           setVersions(newVersions);
-
-          // Refresh credits
-          const newCredits = await apiClient.getCredits(token).catch(() => credits);
           if (newCredits) setCredits(newCredits);
         } else {
-          // No final data — still add whatever accumulated
+          // No final data — still show whatever streamed
           if (accumulated) {
-            const assistantMessage: ChatMessage = {
-              id: assistantId,
-              role: "assistant",
-              content: accumulated,
-              timestamp: new Date().toISOString(),
-              model: selectedModel,
-            };
-            setMessages((prev) => [...prev, assistantMessage]);
+            setMessages((prev) => [
+              ...prev,
+              {
+                id: assistantId,
+                role: "assistant",
+                content: accumulated,
+                timestamp: new Date().toISOString(),
+                model: selectedModel,
+              },
+            ]);
           }
         }
       } catch (err: unknown) {

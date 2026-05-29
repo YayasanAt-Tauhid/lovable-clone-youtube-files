@@ -85,6 +85,10 @@ function getModel(modelId: string, env: Env) {
     const openrouter = createOpenAI({
       baseURL: "https://openrouter.ai/api/v1",
       apiKey: env.OPENROUTER_API_KEY,
+      headers: {
+        "HTTP-Referer": env.FRONTEND_URL || "https://lovable-clone.yayasan-attauhid-1.workers.dev",
+        "X-Title": "Lovable Clone",
+      },
     });
     return openrouter(orModelId);
   }
