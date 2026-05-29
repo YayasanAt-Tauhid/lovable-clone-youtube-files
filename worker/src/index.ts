@@ -41,9 +41,14 @@ const app = new Hono<{ Bindings: Env; Variables: AppVariables }>();
 // ---------------------------------------------------------------------------
 
 app.use("*", async (c, next) => {
-  const origin = c.env.FRONTEND_URL ?? "http://localhost:3000";
+  const envOrigin = c.env.FRONTEND_URL ?? "http://localhost:3000";
   return cors({
-    origin: [origin, "http://localhost:3000", "https://lovable-clone.vercel.app"],
+    origin: [
+      envOrigin,
+      "http://localhost:3000",
+      "https://lovable-clone.yayasan-attauhid-1.workers.dev",
+      "https://lovable-clone-f2z.pages.dev",
+    ],
     allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowHeaders: ["Content-Type", "Authorization"],
     credentials: true,

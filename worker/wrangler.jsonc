@@ -21,6 +21,6 @@
   ],
 
   "vars": {
-    "FRONTEND_URL": "http://localhost:3000"
+    "FRONTEND_URL": "https://lovable-clone.yayasan-attauhid-1.workers.dev"
   }
 }
